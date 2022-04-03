@@ -2,6 +2,7 @@ import { Element, Rectangle } from "../components/Rectangle/Rectangle";
 import { PageContainer } from "../PageContainer";
 import { Toolbar } from "../Toolbar";
 import { atom, useSetRecoilState, useRecoilValue } from "recoil";
+import { EditProperties } from "../EditProperties";
 
 export const selectedElementState = atom<number | null>({
   key: "select-element-atom",
@@ -24,6 +25,7 @@ function Canvas() {
         setSelectedElement(null);
       }}>
       <Toolbar />
+      <EditProperties />
       {elements.map((id) => (
         <Rectangle key={id} id={id} />
       ))}
