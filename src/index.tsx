@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import Canvas from "./pages/Canvas";
@@ -7,11 +7,14 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { RecoilRoot } from "recoil";
 import Atoms from "./pages/collection/atoms";
 import { Selectors } from "./pages/collection/selectors";
+import { Async } from "./pages/DataFetching";
+import DrawerNav from "./components/drawer";
 
 ReactDOM.render(
   <React.StrictMode>
     <RecoilRoot>
       <ChakraProvider>
+        <DrawerNav />
         <Router>
           <Switch>
             <Route path={"/collection/atoms"}>
@@ -21,6 +24,13 @@ ReactDOM.render(
             <Route path={"/collection/selectors"}>
               <Selectors />
             </Route>
+
+            <Route path={"/collection/datafetch"}>
+              <Suspense fallback={<div>Loading...</div>}>
+                <Async />
+              </Suspense>
+            </Route>
+
             <Route>
               <Canvas />
             </Route>
