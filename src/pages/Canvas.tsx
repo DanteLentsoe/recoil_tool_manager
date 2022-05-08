@@ -20,16 +20,18 @@ function Canvas() {
   const setSelectedElement = useSetRecoilState(selectedElementState);
   const elements = useRecoilValue(elementState);
   return (
-    <PageContainer
-      onClick={() => {
-        setSelectedElement(null);
-      }}>
-      <Toolbar />
-      <EditProperties />
-      {elements.map((id) => (
-        <Rectangle key={id} id={id} />
-      ))}
-    </PageContainer>
+    <>
+      <PageContainer
+        onClick={() => {
+          setSelectedElement(null);
+        }}>
+        <Toolbar />
+        <EditProperties />
+        {elements.map((id) => (
+          <Rectangle key={id} id={id} />
+        ))}
+      </PageContainer>
+    </>
   );
 }
 
