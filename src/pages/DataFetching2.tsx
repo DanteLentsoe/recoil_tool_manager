@@ -1,54 +1,35 @@
 import { Container, Heading, Text } from "@chakra-ui/layout";
 import { Select } from "@chakra-ui/select";
-import { Suspense } from "react";
-import { atom, selector, useRecoilState, useRecoilValue } from "recoil";
+import { Suspense, useState } from "react";
+import { getWeather } from "../helpers/pseudoAPI";
+import { selectorFamily, useRecoilValue } from "recoil";
 
-interface IUserAddress {
-  street: string;
-  suite: string;
-  city: string;
-  zipcode: string;
-  geo: any;
-}
-interface IUserCompany {
-  name: string;
-  catchPhrase: string;
-  bs: string;
-}
-interface Iuser {
-  username: string;
-  email: string;
-  name: string;
-  address: IUserAddress;
-  company: IUserCompany;
-
-  id: 1;
-
-  phone: string;
-
-  website: string;
-}
-const userIdState = atom<number | undefined>({
-  key: "userId",
-  default: undefined,
-});
-
-const userData = selector<Iuser>({
+const userData = selectorFamily({
   key: "user",
-  get: async ({ get }) => {
-    const userID = get(userIdState);
-    if (userID === undefined) return;
-
+  get: (userID: number) => async () => {
     const userData = await fetch(
       `https://jsonplaceholder.typicode.com/users/${userID}`
     ).then((res) => res.json());
 
+    if (userID === 4) throw new Error("User does not exist");
     return userData;
   },
 });
 
-const UserData = () => {
-  const user = useRecoilValue(userData);
+const weatherData = selectorFamily({
+  key: "weather",
+  get: (userID: number) => async ({ get }) => {
+    const user = get(userData(userID));
+
+    const weather = await getWeather(user.address.city);
+    console.log("USER DATA ", weather);
+    return weather;
+  },
+});
+
+const UserData = ({ userId }: { userId: number }) => {
+  const user = useRecoilValue(userData(userId));
+  const weather = useRecoilValue(weatherData(userId));
 
   if (!user) return null;
   return (
@@ -64,13 +45,18 @@ const UserData = () => {
           <b>Phone:</b>
           {user.phone}
         </Text>
+
+        <Text>
+          <b>Weather in {user.address.city}: </b>
+          {weather}
+        </Text>
       </div>
     </>
   );
 };
 
-export const Async = () => {
-  const [userId, setUserId] = useRecoilState(userIdState);
+export const Async2 = () => {
+  const [userId, setUserId] = useState<undefined | number>(undefined);
 
   return (
     <Container py={10}>
@@ -94,7 +80,7 @@ export const Async = () => {
       </Select>
       {userId !== undefined && (
         <Suspense fallback={<div>Loading Yoyo</div>}>
-          <UserData />
+          <UserData userId={userId} />
         </Suspense>
       )}
     </Container>

@@ -9,6 +9,7 @@ import Atoms from "./pages/collection/atoms";
 import { Selectors } from "./pages/collection/selectors";
 import { Async } from "./pages/DataFetching";
 import DrawerNav from "./components/drawer";
+import { Async2 } from "./pages/DataFetching2";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -31,6 +32,11 @@ ReactDOM.render(
               </Suspense>
             </Route>
 
+            <Route path={"/collection/datafetch2"}>
+              <Suspense fallback={<div>Loading...</div>}>
+                <Async2 />
+              </Suspense>
+            </Route>
             <Route>
               <Canvas />
             </Route>
