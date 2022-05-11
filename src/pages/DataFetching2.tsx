@@ -2,6 +2,7 @@ import { Container, Heading, Text } from "@chakra-ui/layout";
 import { Select } from "@chakra-ui/select";
 import { Suspense, useState } from "react";
 import { getWeather } from "../helpers/pseudoAPI";
+import { ErrorBoundary, FallbackProps } from "react-error-boundary";
 import {
   selectorFamily,
   useRecoilValue,
@@ -42,6 +43,23 @@ const useRefetchWeather = (userID: number) => {
   const setRequestID = useSetRecoilState(weatherDataFam(userID));
 
   return () => setRequestID((id) => id + 1);
+};
+
+const ErrorFallBack = ({ error, resetErrorBoundary }: FallbackProps) => {
+  return (
+    <>
+      <Heading as="h2" size="md" mb={1}>
+        Error Occurred
+      </Heading>
+      <Text>
+        <b>{error.message}</b>
+      </Text>
+
+      <Button onClick={resetErrorBoundary}>
+        <Text>Done </Text>
+      </Button>
+    </>
+  );
 };
 
 const UserData = ({ userId }: { userId: number }) => {
@@ -92,18 +110,24 @@ export const Async2 = () => {
         placeholder="Choose a user"
         mb={4}
         value={userId}
-        onChange={(event) => {
+        onChange={(event: { target: { value: string } }) => {
           const value = event.target.value;
           setUserId(value ? parseInt(value) : undefined);
         }}>
         <option value="1">User 1</option>
         <option value="2">User 2</option>
         <option value="3">User 3</option>
+        <option value="4">User 4</option>
       </Select>
       {userId !== undefined && (
-        <Suspense fallback={<div>Loading Yoyo</div>}>
-          <UserData userId={userId} />
-        </Suspense>
+        <ErrorBoundary
+          FallbackComponent={ErrorFallBack}
+          onReset={() => setUserId(undefined)}
+          resetKeys={[userId]}>
+          <Suspense fallback={<div>Loading Yoyo</div>}>
+            <UserData userId={userId} />
+          </Suspense>
+        </ErrorBoundary>
       )}
     </Container>
   );
