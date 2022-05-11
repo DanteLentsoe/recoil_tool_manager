@@ -35,6 +35,7 @@ function DrawerNav() {
               <Link href="/">Canvas Editing</Link>
               <Link href="/collection/atoms">Atoms Examples</Link>
               <Link href="/collection/selectors">Selectors Examples</Link>
+              <Link href="/collection/shopping">Shopping Example</Link>
             </VStack>
           </DrawerBody>
         </DrawerContent>

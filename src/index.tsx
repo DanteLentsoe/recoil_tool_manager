@@ -10,6 +10,7 @@ import { Selectors } from "./pages/collection/selectors";
 import { Async } from "./pages/DataFetching";
 import DrawerNav from "./components/drawer";
 import { Async2 } from "./pages/DataFetching2";
+import { AtomEffects } from "./pages/AtomEffects";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -24,6 +25,10 @@ ReactDOM.render(
 
             <Route path={"/collection/selectors"}>
               <Selectors />
+            </Route>
+
+            <Route path={"/collection/shopping"}>
+              <AtomEffects />
             </Route>
 
             <Route path={"/collection/datafetch"}>
