@@ -11,6 +11,7 @@ import { Async } from "./pages/DataFetching";
 import DrawerNav from "./components/drawer";
 import { Async2 } from "./pages/DataFetching2";
 import { AtomEffects } from "./pages/AtomEffects";
+import { AtomEffectsAPI } from "./pages/AtomEffectsAPI";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -29,6 +30,12 @@ ReactDOM.render(
 
             <Route path={"/collection/shopping"}>
               <AtomEffects />
+            </Route>
+
+            <Route path={"/collection/shoping-api"}>
+              <Suspense fallback={<div>Loading...</div>}>
+                <AtomEffectsAPI />
+              </Suspense>
             </Route>
 
             <Route path={"/collection/datafetch"}>
