@@ -3,7 +3,12 @@ import { Input } from "@chakra-ui/input";
 import { Box, Divider, Heading, VStack } from "@chakra-ui/layout";
 import produce from "immer";
 import React, { useState } from "react";
-import { atom, useRecoilState, useResetRecoilState } from "recoil";
+import {
+  atom,
+  DefaultValue,
+  useRecoilState,
+  useResetRecoilState,
+} from "recoil";
 
 type ItemType = {
   label: string;
@@ -13,6 +18,28 @@ type ItemType = {
 const shoppingListState = atom<ItemType[]>({
   key: "shoppingList",
   default: [],
+  // For storing and persisting Data from or to an API
+
+  effects_UNSTABLE: [
+    ({ onSet, setSelf }) => {
+      const storeData = localStorage.getItem("ShoppingListData");
+
+      if (storeData !== null) {
+        setSelf(JSON.parse(storeData));
+      }
+
+      onSet((newShoppingList) => {
+        if (newShoppingList instanceof DefaultValue) {
+          localStorage.removeItem("ShoppingListData");
+        } else {
+          localStorage.setItem(
+            "ShoppingListData",
+            JSON.stringify(newShoppingList)
+          );
+        }
+      });
+    },
+  ],
 });
 
 export const AtomEffects = () => {
