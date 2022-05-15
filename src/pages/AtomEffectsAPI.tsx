@@ -18,13 +18,29 @@ type ItemType = {
   checked: boolean;
 };
 
+let cachedData: Record<string, ItemType> | undefined;
+
+const getItems = async () => {
+  if (!cachedData) {
+    cachedData = await shoppingListAPI.getItems();
+  }
+
+  return cachedData;
+};
+
+const getItem = async (id: number) => {
+  const items = await getItems();
+
+  return items[id];
+};
+
 const idsState = atom<number[]>({
   key: "ids",
   default: [],
   effects_UNSTABLE: [
     ({ setSelf }) => {
       // async api getting or the fetch
-      const getDataPromise = shoppingListAPI.getItems().then((items) => {
+      const getDataPromise = getItems().then((items) => {
         return Object.keys(items).map((itemList) => parseInt(itemList));
       });
 
@@ -42,7 +58,7 @@ const itemState = atomFamily<ItemType, number>({
       // 1. Fetch individual item data from the API and initialise the atoms
       // 2. Update/create individual item data via the API
 
-      const itemPromise = shoppingListAPI.getItem(id).then((item) => {
+      const itemPromise = getItem(id).then((item) => {
         if (item === undefined) {
           // intialize to the default value
           return new DefaultValue();
